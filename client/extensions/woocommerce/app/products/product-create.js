@@ -35,7 +35,7 @@ class ProductCreate extends Component {
 			<ProductForm
 				product={ product || {} }
 				editProduct={ this.props.editProduct }
-				editProductAttribute={ editProductAttribute }
+				editProductAttribute={ this.props.editProductAttribute }
 			/>
 		);
 	}
