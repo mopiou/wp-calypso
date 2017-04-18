@@ -72,6 +72,7 @@ export class MySitesSidebar extends Component {
 
 	onPreviewSite = ( event ) => {
 		const { site } = this.props;
+		analytics.ga.recordEvent( 'Sidebar', 'Clicked View Site' );
 		if ( site.is_previewable && ! event.metaKey && ! event.ctrlKey ) {
 			event.preventDefault();
 			this.props.setLayoutFocus( 'preview' );
@@ -112,6 +113,17 @@ export class MySitesSidebar extends Component {
 				itemLinkClass={ this.itemLinkClass }
 				onNavigate={ this.onNavigate } />
 		);
+	}
+
+	view() {
+		const { site } = this.props;
+		return site
+			? <SidebarItem
+				icon="house"
+				link={ site.URL }
+				label={ this.props.translate( 'View Site' ) }
+				onNavigate={ this.onPreviewSite } />
+			: null;
 	}
 
 	stats() {
@@ -512,6 +524,7 @@ export class MySitesSidebar extends Component {
 			<div>
 				<SidebarMenu>
 					<ul>
+						{ this.view() }
 						{ this.stats() }
 						{ this.plan() }
 					</ul>

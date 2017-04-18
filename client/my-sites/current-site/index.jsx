@@ -113,7 +113,6 @@ const CurrentSite = React.createClass( {
 	},
 
 	previewSite: function( event ) {
-		analytics.ga.recordEvent( 'Sidebar', 'Clicked View Site' );
 		this.props.onClick && this.props.onClick( event );
 	},
 
