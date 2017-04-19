@@ -44,8 +44,10 @@ const renderCachePreloadInterval = ( {
  */
 const PreloadTab = ( {
 	fields: {
+		is_cache_enabled,
 		is_preload_enabled,
 		is_preloading,
+		is_super_cache_enabled,
 		minimum_preload_interval,
 		preload_email_volume,
 		preload_interval,
@@ -54,8 +56,6 @@ const PreloadTab = ( {
 		preload_posts_options,
 		preload_refresh,
 		preload_taxonomies,
-		super_cache_enabled,
-		wp_cache_enabled,
 	},
 	handleChange,
 	handleSelect,
@@ -69,7 +69,7 @@ const PreloadTab = ( {
 		{ value: 'less', description: translate( 'Low (one email at the start and one at the end of preloading all posts)' ) },
 	];
 
-	if ( ! wp_cache_enabled ) {
+	if ( ! is_cache_enabled ) {
 		return (
 			<Notice
 				text={ translate( 'Caching must be enabled to use this feature.' ) }
@@ -77,7 +77,7 @@ const PreloadTab = ( {
 		);
 	}
 
-	if ( ( '0' === super_cache_enabled ) || ! is_preload_enabled ) {
+	if ( is_super_cache_enabled && ! is_preload_enabled ) {
 		return (
 			<Notice
 				text={ translate( 'Preloading of cache disabled. Please disable legacy page caching or talk to your host administrator.' ) }
@@ -196,8 +196,10 @@ const PreloadTab = ( {
 
 const getFormSettings = settings => {
 	return pick( settings, [
+		'is_cache_enabled',
 		'is_preload_enabled',
 		'is_preloading',
+		'is_super_cache_enabled',
 		'minimum_preload_interval',
 		'preload_email_volume',
 		'preload_interval',
@@ -206,8 +208,6 @@ const getFormSettings = settings => {
 		'preload_posts_options',
 		'preload_refresh',
 		'preload_taxonomies',
-		'super_cache_enabled',
-		'wp_cache_enabled',
 	] );
 };
 
