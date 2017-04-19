@@ -19,8 +19,9 @@ import WrapSettingsForm from './wrap-settings-form';
 
 const Caching = ( {
 	fields: {
-		super_cache_enabled,
-		wp_cache_enabled,
+		cache_mod_rewrite,
+		is_cache_enabled,
+		is_super_cache_enabled,
 	},
 	handleRadio,
 	handleToggle,
@@ -40,8 +41,8 @@ const Caching = ( {
 				<form>
 					<FormFieldset>
 						<FormToggle
-							checked={ !! wp_cache_enabled }
-							onChange={ handleToggle( 'wp_cache_enabled' ) }>
+							checked={ !! is_cache_enabled }
+							onChange={ handleToggle( 'is_cache_enabled' ) }>
 							<span>
 								{ translate( 'Caching On {{em}}(Recommended){{/em}}',
 									{
@@ -55,8 +56,8 @@ const Caching = ( {
 					<FormFieldset>
 						<FormLabel>
 							<FormRadio
-								checked={ '1' === super_cache_enabled }
-								name="super_cache_enabled"
+								checked={ !! is_super_cache_enabled && !! cache_mod_rewrite }
+								name="is_super_cache_enabled"
 								onChange={ handleRadio }
 								value="1" />
 							<span>
@@ -66,8 +67,8 @@ const Caching = ( {
 
 						<FormLabel>
 							<FormRadio
-								checked={ '2' === super_cache_enabled }
-								name="super_cache_enabled"
+								checked={ ! cache_mod_rewrite }
+								name="is_super_cache_enabled"
 								onChange={ handleRadio }
 								value="2" />
 							<span>
@@ -82,8 +83,8 @@ const Caching = ( {
 
 						<FormLabel>
 							<FormRadio
-								checked={ '0' === super_cache_enabled }
-								name="super_cache_enabled"
+								checked={ ! is_super_cache_enabled }
+								name="is_super_cache_enabled"
 								onChange={ handleRadio }
 								value="0" />
 							<span>
@@ -108,8 +109,9 @@ const Caching = ( {
 
 const getFormSettings = settings => {
 	return pick( settings, [
-		'super_cache_enabled',
-		'wp_cache_enabled',
+		'cache_mod_rewrite',
+		'is_cache_enabled',
+		'is_super_cache_enabled',
 	] );
 };
 

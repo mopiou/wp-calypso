@@ -14,13 +14,13 @@ import WrapSettingsForm from './wrap-settings-form';
 
 const LockDown = ( {
 	fields: {
-		wp_lock_down,
+		lock_down,
 	},
 	translate,
 } ) => {
 	return (
 		<div>
-			<SectionHeader label={ !! wp_lock_down ? translate( 'Lock Down - Enabled' ) : translate( 'Lock Down - Disabled' ) } />
+			<SectionHeader label={ lock_down ? translate( 'Lock Down - Enabled' ) : translate( 'Lock Down - Disabled' ) } />
 			<Card>
 				<form>
 					<p>
@@ -47,7 +47,7 @@ const LockDown = ( {
 						) }
 					</p>
 					<p>
-						{ !! wp_lock_down
+						{ lock_down
 							? translate( 'WordPress is locked down. Super Cache static files will not be deleted ' +
 								'when new comments are made.' )
 							: translate( 'WordPress is not locked down. New comments will refresh Super Cache static files as normal.' )
@@ -57,7 +57,7 @@ const LockDown = ( {
 						<Button
 							compact={ true }
 							type="submit">
-								{ ! wp_lock_down ? translate( 'Enable Lock Down' ) : translate( 'Disable Lock Down' ) }
+								{ ! lock_down ? translate( 'Enable Lock Down' ) : translate( 'Disable Lock Down' ) }
 						</Button>
 					</div>
 				</form>
@@ -68,7 +68,7 @@ const LockDown = ( {
 
 const getFormSettings = settings => {
 	return pick( settings, [
-		'wp_lock_down',
+		'lock_down',
 	] );
 };
 
