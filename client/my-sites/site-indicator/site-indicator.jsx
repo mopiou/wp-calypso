@@ -23,8 +23,8 @@ import { getUpdatesBySiteId } from 'state/sites/updates/selectors';
 import { updateWordPress } from 'state/sites/updates/actions';
 import {
 	getSiteConnectionStatus,
-	getSiteCoreUpdateStatus,
-	isRequestingSiteConnectionStatus
+	isRequestingSiteConnectionStatus,
+	isWordpressUpdateSuccessful,
 } from 'state/selectors';
 
 class SiteIndicator extends Component {
@@ -181,7 +181,7 @@ class SiteIndicator extends Component {
 	}
 
 	handleUpdate = () => {
-		const { coreUpdateStatus, site } = this.props;
+		const { wordpressUpdateSuccessful, site } = this.props;
 
 		this.setState( {
 			updating: true,
@@ -191,7 +191,7 @@ class SiteIndicator extends Component {
 		this.timer != null ? clearTimeout( this.timer ) : null;
 
 		this.props.updateWordPress( site.ID ).then( () => {
-			if ( coreUpdateStatus ) {
+			if ( wordpressUpdateSuccessful ) {
 				this.onUpdateSuccess();
 			} else {
 				this.onUpdateError();
@@ -375,7 +375,7 @@ class SiteIndicator extends Component {
 export default connect(
 	( state, { site } ) => {
 		return {
-			coreUpdateStatus: site && getSiteCoreUpdateStatus( state, site.ID ),
+			wordpressUpdateSuccessful: site && isWordpressUpdateSuccessful( state, site.ID ),
 			requestingConnectionStatus: site && isRequestingSiteConnectionStatus( state, site.ID ),
 			siteIsConnected: site && getSiteConnectionStatus( state, site.ID ),
 			siteIsJetpack: site && isJetpackSite( state, site.ID ),
