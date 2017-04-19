@@ -49,11 +49,11 @@ const PreloadTab = ( {
 		is_preloading,
 		is_super_cache_enabled,
 		minimum_preload_interval,
+		post_count,
 		preload_email_volume,
 		preload_interval,
 		preload_on,
 		preload_posts,
-		preload_posts_options,
 		preload_refresh,
 		preload_taxonomies,
 	},
@@ -68,6 +68,23 @@ const PreloadTab = ( {
 		{ value: 'medium', description: translate( 'Medium (one email per 100 posts)' ) },
 		{ value: 'less', description: translate( 'Low (one email at the start and one at the end of preloading all posts)' ) },
 	];
+
+	const getPreloadPostsOptions = () => {
+		if ( ! post_count || ( post_count <= 100 ) ) {
+			return [];
+		}
+
+		const step = Math.floor( post_count / 10 );
+		const options = [ 'all' ];
+
+		for ( let i = step; i < post_count; i += step ) {
+			options.push( i );
+		}
+
+		options.push( post_count );
+
+		return options;
+	};
 
 	if ( ! is_cache_enabled ) {
 		return (
@@ -145,6 +162,7 @@ const PreloadTab = ( {
 						</FormToggle>
 					</FormFieldset>
 
+					{ post_count && post_count > 100 &&
 					<FormFieldset>
 						<FormLabel htmlFor="preload_posts">
 							{ translate( 'Preload Posts' ) }
@@ -155,9 +173,10 @@ const PreloadTab = ( {
 							name="preload_posts"
 							onChange={ handleSelect }
 							value={ preload_posts || 'all' }>
-							{ preload_posts_options.map( ( option ) => <option key={ option } value={ option }>{ option }</option> ) }
+							{ getPreloadPostsOptions().map( ( option ) => <option key={ option } value={ option }>{ option }</option> ) }
 						</FormSelect>
 					</FormFieldset>
+					}
 
 					<hr />
 
@@ -201,11 +220,11 @@ const getFormSettings = settings => {
 		'is_preloading',
 		'is_super_cache_enabled',
 		'minimum_preload_interval',
+		'post_count',
 		'preload_email_volume',
 		'preload_interval',
 		'preload_on',
 		'preload_posts',
-		'preload_posts_options',
 		'preload_refresh',
 		'preload_taxonomies',
 	] );
