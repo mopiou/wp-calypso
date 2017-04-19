@@ -125,14 +125,12 @@ const TagStream = React.createClass( {
 	}
 } );
 
-export default connect(
-	null,
+export default needs(
+	[
+		readerTags( { needTags: true, needFollowedTags: true } ),
+	],
 	{
 		followTag: requestFollowTag,
 		unfollowTag: requestUnfollowTag,
-	}
-)(
-	needs(
-		readerTags( { needTags: true, needFollowedTags: true } )
-	)( TagStream )
-);
+	},
+)( TagStream );

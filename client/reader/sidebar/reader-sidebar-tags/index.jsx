@@ -12,9 +12,8 @@ import { identity } from 'lodash';
  */
 import ExpandableSidebarMenu from '../expandable';
 import ReaderSidebarTagsList from './list';
-import QueryReaderFollowedTags from 'components/data/query-reader-followed-tags';
-import { getReaderFollowedTags } from 'state/selectors';
 import { requestFollowTag, requestUnfollowTag } from 'state/reader/tags/items/actions';
+import needs, { readerTags } from 'lib/needs';
 
 import {
 	recordAction,
@@ -69,11 +68,10 @@ export class ReaderSidebarTags extends Component {
 	}
 
 	render() {
-		const { tags, isOpen, translate, onClick } = this.props;
+		const { followedTags: tags, isOpen, translate, onClick } = this.props;
 		const tagCount = tags ? tags.length : 0;
 		return (
 			<div>
-				{ ! this.props.tags && <QueryReaderFollowedTags /> }
 				<ExpandableSidebarMenu
 					expanded={ isOpen }
 					title={ translate( 'Tags' ) }
@@ -90,10 +88,10 @@ export class ReaderSidebarTags extends Component {
 	}
 }
 
-export default connect(
-	state => ( {
-		tags: getReaderFollowedTags( state ),
-	} ),
+export default needs(
+	[
+		readerTags( { followedTags: true } ),
+	],
 	{
 		followTag: requestFollowTag,
 		unfollowTag: requestUnfollowTag,
