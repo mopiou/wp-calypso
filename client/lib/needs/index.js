@@ -7,6 +7,7 @@ import { map, reduce, merge } from 'lodash';
 
 export readerFeed from './reader-feed';
 export readerSite from './reader-site';
+export readerTags from './reader-tags';
 
 const mergeMapPropsToActions = ( needs, state, ownProps ) =>
 	reduce(

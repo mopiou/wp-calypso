@@ -17,11 +17,9 @@ import {
 	recordTrack,
 } from 'reader/stats';
 import HeaderBack from 'reader/header-back';
-import { getReaderFollowedTags, getReaderTags } from 'state/selectors';
 import { requestFollowTag, requestUnfollowTag } from 'state/reader/tags/items/actions';
-import QueryReaderFollowedTags from 'components/data/query-reader-followed-tags';
-import QueryReaderTag from 'components/data/query-reader-tag';
 import { find } from 'lodash';
+import needs, { readerTags } from 'lib/needs';
 
 const TagStream = React.createClass( {
 
@@ -112,8 +110,6 @@ const TagStream = React.createClass( {
 
 		return (
 			<Stream { ...this.props } listName={ this.state.title } emptyContent={ emptyContent } showFollowInHeader={ true } >
-				<QueryReaderFollowedTags />
-				<QueryReaderTag tag={ this.props.decodedTag } />
 				<DocumentHead title={ this.translate( '%s ‹ Reader', { args: title } ) } />
 				{ this.props.showBack && <HeaderBack /> }
 				<TagStreamHeader
@@ -136,5 +132,7 @@ export default connect(
 		unfollowTag: requestUnfollowTag,
 	}
 )(
-	needs( )( TagStream )
+	needs(
+		readerTags( { needTags: true, needFollowedTags: true } )
+	)( TagStream )
 );
