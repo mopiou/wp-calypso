@@ -6,10 +6,11 @@ import { getFeed } from 'state/reader/feeds/selectors';
 import { shouldSiteBeFetched } from 'state/reader/sites/selectors';
 import { requestSite } from 'state/reader/sites/actions';
 
-export default {
+const readerSite = () => ( {
 	mapStateToProps: ( state, ownProps ) => ( {
 		site: getSite( state, ownProps.siteId )
 	} ),
+
 	mapStateToRequestActions: ( state, ownProps ) => {
 		const feed = ownProps.feed && getFeed( state, ownProps.feedId );
 		const siteId = ownProps.siteId ? ownProps.siteId : feed && feed.blog_ID;
@@ -19,4 +20,6 @@ export default {
 		}
 		return [];
 	}
-};
+} );
+
+export default readerSite;
