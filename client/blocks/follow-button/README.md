@@ -8,7 +8,7 @@ For most uses, the container is the easiest route.
 #### How to use the container:
 
 ```js
-var FollowButtonContainer = require( 'components/follow-button' );
+var FollowButtonContainer = require( 'blocks/follow-button' );
 
 render: function() {
 	return (
