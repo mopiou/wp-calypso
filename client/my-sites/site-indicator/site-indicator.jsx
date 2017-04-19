@@ -342,8 +342,8 @@ class SiteIndicator extends Component {
 						</button>
 					</Animate>
 				}
-				{ this.state.expand
-					? <div className="site-indicator__message">
+				{ this.state.expand &&
+					<div className="site-indicator__message">
 						<div className={ textClass }>
 							{ this.getText() }
 						</div>
@@ -353,7 +353,7 @@ class SiteIndicator extends Component {
 							</Animate>
 						</button>
 					</div>
-					: null }
+				}
 			</div>
 		);
 	}
