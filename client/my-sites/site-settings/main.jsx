@@ -3,7 +3,6 @@
  */
 import React, { PropTypes, Component } from 'react';
 import { connect } from 'react-redux';
-import debugFactory from 'debug';
 import i18n from 'i18n-calypso';
 
 /**
@@ -14,7 +13,7 @@ import notices from 'notices';
 import QueryProductsList from 'components/data/query-products-list';
 import QuerySitePurchases from 'components/data/query-site-purchases';
 import { getSitePurchases, hasLoadedSitePurchasesFromServer, getPurchasesError } from 'state/purchases/selectors';
-import { getSelectedSiteId } from 'state/ui/selectors';
+import { getSelectedSite, getSelectedSiteId } from 'state/ui/selectors';
 import { isJetpackSite, siteSupportsJetpackSettingsUi } from 'state/sites/selectors';
 import GeneralSettings from './section-general';
 import ImportSettings from './section-import';
@@ -25,31 +24,21 @@ import SiteSettingsNavigation from './navigation';
 import SidebarNavigation from 'my-sites/sidebar-navigation';
 import JetpackDevModeNotice from './jetpack-dev-mode-notice';
 
-/**
- * Module vars
- */
-const debug = debugFactory( 'calypso:my-sites:site-settings' );
-
 export class SiteSettingsComponent extends Component {
-	constructor( props ) {
-		super( props );
 
-		// bound methods
-		this.updateSite = this.updateSite.bind( this );
+	static propTypes = {
+		hasLoadedSitePurchasesFromServer: PropTypes.bool.isRequired,
+		purchasesError: PropTypes.object,
+		section: PropTypes.string,
+		sitePurchases: PropTypes.array.isRequired,
+		site: PropTypes.object,
+		siteId: PropTypes.number,
+		jetpackSettingsUiSupported: PropTypes.bool
+	};
 
-		this.state = {
-			site: this.props.sites.getSelectedSite()
-		};
-	}
-
-	componentWillMount() {
-		debug( 'Mounting SiteSettings React component.' );
-		this.props.sites.on( 'change', this.updateSite );
-	}
-
-	componentWillUnmount() {
-		this.props.sites.off( 'change', this.updateSite );
-	}
+	static defaultProps = {
+		section: 'general'
+	};
 
 	componentWillReceiveProps( nextProps ) {
 		if ( nextProps.purchasesError ) {
@@ -67,7 +56,7 @@ export class SiteSettingsComponent extends Component {
 	}
 
 	getSection() {
-		const { site } = this.state;
+		const { site } = this.props;
 		const { section, hostSlug } = this.props;
 
 		switch ( section ) {
@@ -90,8 +79,12 @@ export class SiteSettingsComponent extends Component {
 	}
 
 	render() {
-		const { site } = this.state;
+		const { site } = this.props;
 		const { jetpackSettingsUiSupported, section } = this.props;
+
+		if ( ! site ) {
+			return null;
+		}
 
 		return (
 			<Main className="site-settings">
@@ -108,34 +101,21 @@ export class SiteSettingsComponent extends Component {
 		);
 	}
 
-	updateSite() {
-		this.setState( { site: this.props.sites.getSelectedSite() } );
-	}
 }
-
-SiteSettingsComponent.propTypes = {
-	hasLoadedSitePurchasesFromServer: PropTypes.bool.isRequired,
-	purchasesError: PropTypes.object,
-	section: PropTypes.string,
-	sitePurchases: PropTypes.array.isRequired,
-	sites: PropTypes.object.isRequired
-};
-
-SiteSettingsComponent.defaultProps = {
-	section: 'general'
-};
 
 export default connect(
 	( state ) => {
 		const siteId = getSelectedSiteId( state );
+		const site = getSelectedSite( state );
 		const jetpackSite = isJetpackSite( state, siteId );
 		const jetpackUiSupported = siteSupportsJetpackSettingsUi( state, siteId );
 
 		return {
+			site,
 			siteId,
 			hasLoadedSitePurchasesFromServer: hasLoadedSitePurchasesFromServer( state ),
 			purchasesError: getPurchasesError( state ),
-			sitePurchases: getSitePurchases( state, getSelectedSiteId( state ) ),
+			sitePurchases: getSitePurchases( state, siteId ),
 			jetpackSettingsUiSupported: jetpackSite && jetpackUiSupported,
 		};
 	}
