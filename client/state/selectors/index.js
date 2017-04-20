@@ -72,6 +72,7 @@ export getSiteConnectionStatus from './get-site-connection-status';
 export getSiteGmtOffset from './get-site-gmt-offset';
 export getSiteIconId from './get-site-icon-id';
 export getSiteIconUrl from './get-site-icon-url';
+export getSiteId from './get-site-id';
 export getSiteMonitorSettings from './get-site-monitor-settings';
 export getSiteSetting from './get-site-setting';
 export getSiteStatsQueryDate from './get-site-stats-query-date';
