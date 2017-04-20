@@ -27,15 +27,19 @@ class FollowingManageSubscriptions extends Component {
 			<div className="following-manage__subscriptions">
 				<QueryReaderFollows />
 				<div className="following-manage__subscriptions-controls">
-					{
-						translate( '%(num)s Followed Sites', {
-							args: { num: follows.length }
-						} )
-					}
+					<h1 className="following-manage__subscriptions-controls-heading">
+						{
+							translate( '%(num)s Followed Sites', {
+								args: { num: follows.length }
+							} )
+						}
+						</h1>
 					<ReaderImportButton />
 					<ReaderExportButton />
 					<FollowingManageSortControls />
-					<FollowingManageSearchFollowed />
+					<div className="following-manage__subscriptions-controls-search">
+						<FollowingManageSearchFollowed />
+					</div>
 				</div>
 				<div className="following-manage__subscriptions-list">
 					<SitesWindowScroller
