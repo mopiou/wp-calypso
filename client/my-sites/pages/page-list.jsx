@@ -20,6 +20,17 @@ var PostListFetcher = require( 'components/post-list-fetcher' ),
 
 import BlogPostsPage from './blog-posts-page';
 
+// @TODO move this out of "helpers" :)
+import { sortPages } from './helpers';
+
+// @TODO -- move this to a test file -- just getting started with some sample data for now
+import testData from './test-pages.json';
+const testPages = testData.posts;
+
+// @TODO remove debug
+import debugFactory from 'debug';
+const debug = debugFactory( 'calypso:pages-sorter' );
+
 var PageList = React.createClass( {
 
 	mixins: [ PureRenderMixin ],
@@ -200,6 +211,8 @@ var Pages = React.createClass( {
 	render: function() {
 		var pages = this.props.posts,
 			rows = [];
+
+		debug( sortPages( testPages ) );
 
 		// pages have loaded, sites have loaded, and we have a site instance or are viewing all-sites
 		if ( pages.length && this.props.sites.initialized ) {
