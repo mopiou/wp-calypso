@@ -22,11 +22,10 @@ import AmpJetpack from 'my-sites/site-settings/amp/jetpack';
 import AmpWpcom from 'my-sites/site-settings/amp/wpcom';
 import wrapSettingsForm from 'my-sites/site-settings/wrap-settings-form';
 import { getSelectedSite, getSelectedSiteId } from 'state/ui/selectors';
-import { isJetpackSite, siteSupportsJetpackSettingsUi } from 'state/sites/selectors';
+import { isJetpackSite } from 'state/sites/selectors';
 
 const SiteSettingsTraffic = ( {
 	fields,
-	jetpackSettingsUiSupported,
 	handleAutosavingToggle,
 	handleSubmitForm,
 	isJetpack,
@@ -45,7 +44,7 @@ const SiteSettingsTraffic = ( {
 		<SidebarNavigation />
 		<SiteSettingsNavigation site={ site } section="traffic" />
 
-		{ jetpackSettingsUiSupported &&
+		{ isJetpack &&
 			<JetpackSiteStats
 				handleAutosavingToggle={ handleAutosavingToggle }
 				setFieldValue={ setFieldValue }
@@ -87,12 +86,10 @@ const connectComponent = connect(
 		const site = getSelectedSite( state );
 		const siteId = getSelectedSiteId( state );
 		const isJetpack = isJetpackSite( state, siteId );
-		const jetpackSettingsUiSupported = isJetpack && siteSupportsJetpackSettingsUi( state, siteId );
 
 		return {
 			site,
 			isJetpack,
-			jetpackSettingsUiSupported,
 		};
 	}
 );
