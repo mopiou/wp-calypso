@@ -140,7 +140,7 @@ var Pages = React.createClass( {
 			/>;
 		} else {
 			const { site, siteId } = this.props;
-			const sitePart = site.slug || siteId;
+			const sitePart = site && site.slug || siteId;
 			newPageLink = this.props.siteID ? '/page/' + sitePart : '/page';
 
 			if ( this.props.hasRecentError ) {

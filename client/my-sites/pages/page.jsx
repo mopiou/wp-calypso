@@ -36,9 +36,7 @@ import {
 	isFrontPage,
 	isPostsPage,
 } from 'state/pages/selectors';
-import { setFrontPage } from 'state/sites/actions';
 import { userCan } from 'lib/site/utils';
-import { updateSitesList } from './helpers';
 import { setPreviewUrl } from 'state/ui/preview/actions';
 import { setLayoutFocus } from 'state/ui/layout-focus/actions';
 import { getPreviewURL } from 'lib/posts/utils';
@@ -114,11 +112,6 @@ const Page = React.createClass( {
 	// Construct a link to the Site the page belongs too
 	getSiteDomain: function() {
 		return ( this.props.site && this.props.site.domain ) || '...';
-	},
-
-	setAsHomepage: function() {
-		this.setState( { showPageActions: false } );
-		this.props.setFrontPage( this.props.page.site_ID, this.props.page.ID, updateSitesList );
 	},
 
 	getSetAsHomepageItem: function() {
@@ -287,7 +280,10 @@ const Page = React.createClass( {
 	},
 
 	getCopyItem: function() {
-		const { page: post, site } = this.props;
+		const {
+			page: post,
+			siteSlugOrId,
+		} = this.props;
 		if (
 			! includes( [ 'draft', 'future', 'pending', 'private', 'publish' ], post.status ) ||
 			! utils.userCan( 'edit_post', post )
@@ -295,7 +291,7 @@ const Page = React.createClass( {
 			return null;
 		}
 		return (
-			<PopoverMenuItem onClick={ this.copyPage } href={ `/page/${ site.slug }?copy=${ post.ID }` }>
+			<PopoverMenuItem onClick={ this.copyPage } href={ `/page/${ siteSlugOrId }?copy=${ post.ID }` }>
 				<Gridicon icon="clipboard" size={ 18 } />
 				{ this.translate( 'Copy' ) }
 			</PopoverMenuItem>
@@ -461,19 +457,21 @@ const Page = React.createClass( {
 
 export default connect(
 	( state, props ) => {
-		const site = getSite( state, props.page.site_ID );
+		const site = getSite( state, props.page.site_ID ) || {};
+		const siteSlugOrId = site.slug || site.ID || null;
+
 		return {
 			selectedSiteId: getSelectedSiteId( state ),
 			hasStaticFrontPage: hasStaticFrontPage( state, props.page.site_ID ),
 			isFrontPage: isFrontPage( state, props.page.site_ID, props.page.ID ),
 			isPostsPage: isPostsPage( state, props.page.site_ID, props.page.ID ),
-			isPreviewable: false !== isSitePreviewable( state, site.ID ),
+			isPreviewable: false !== isSitePreviewable( state, props.page.site_ID ),
 			previewURL: getPreviewURL( props.page ),
 			site,
+			siteSlugOrId,
 		};
 	},
 	( dispatch ) => bindActionCreators( {
-		setFrontPage,
 		setPreviewUrl,
 		setLayoutFocus
 	}, dispatch )

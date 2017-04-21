@@ -96,7 +96,7 @@ const PagesMain = React.createClass( {
 			site,
 			siteId,
 		} = this.props;
-		const sitePart = site.slug || siteId;
+		const sitePart = site && site.slug || siteId;
 		const siteFilter = sitePart ? '/' + sitePart : '';
 
 		return statuses.map( function( status ) {
