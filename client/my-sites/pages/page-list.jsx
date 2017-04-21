@@ -4,6 +4,15 @@
 var React = require( 'react' ),
 	PureRenderMixin = require( 'react-pure-render/mixin' ),
 	omit = require( 'lodash/omit' );
+import {
+	assign,
+	forEach,
+	groupBy,
+	includes,
+	map,
+	reduce,
+	sortBy,
+} from 'lodash';
 
 /**
  * Internal dependencies
@@ -19,9 +28,6 @@ var PostListFetcher = require( 'components/post-list-fetcher' ),
 	mapStatus = require( 'lib/route' ).mapPostStatus;
 
 import BlogPostsPage from './blog-posts-page';
-
-// @TODO move this out of "helpers" :)
-import { sortPages } from './helpers';
 
 // @TODO -- move this to a test file -- just getting started with some sample data for now
 import testData from './test-pages.json';
@@ -56,6 +62,42 @@ var PageList = React.createClass( {
 		);
 	}
 } );
+
+// @TODO Once SitesList is 💥, these should move to redux
+const sortByModified = list => sortBy( list, 'modified' );
+const getParentID = page => page.parent && page.parent.ID;
+const sortPagesHierarchically = pages => {
+	const pageIDs = map( pages, 'ID' );
+
+	const pagesByParent = reduce( groupBy( pages, getParentID ), ( result, list, parentID ) => {
+		if ( ! parentID || parentID === 'false' || ! includes( pageIDs, parseInt( parentID, 10 ) ) ) {
+			// If we don't have the parent in our list, promote the page to "top level"
+			result.false = sortByModified( ( result.false || [] ).concat( list ) );
+			return result;
+		}
+
+		result[ parentID ] = sortByModified( list );
+		return result;
+	}, {} );
+
+	const sortedPages = [];
+
+	const insertChildren = ( pageID, indentLevel ) => {
+		const children = pagesByParent[ pageID ] || [];
+
+		forEach( children, child => {
+			sortedPages.push( assign( {}, child, { indentLevel } ) );
+			insertChildren( child.ID, indentLevel++ );
+		} );
+	};
+
+	forEach( pagesByParent.false, topLevelPage => {
+		sortedPages.push( topLevelPage );
+		insertChildren( topLevelPage.ID, 1 );
+	} );
+
+	return sortedPages;
+};
 
 var Pages = React.createClass( {
 
@@ -212,7 +254,7 @@ var Pages = React.createClass( {
 		var pages = this.props.posts,
 			rows = [];
 
-		debug( sortPages( testPages ) );
+		debug( sortPagesHierarchically( testPages ) );
 
 		// pages have loaded, sites have loaded, and we have a site instance or are viewing all-sites
 		if ( pages.length && this.props.sites.initialized ) {
