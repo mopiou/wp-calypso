@@ -27,7 +27,7 @@ export default class ProductFormVariationCard extends Component {
 		super( props );
 
 		this.state = {
-			isVariation: props.product && 'variable' === props.product.type ? true : false,
+			isVariableProduct: props.product && 'variable' === props.product.type ? true : false,
 		};
 
 		this.handleToggle = this.handleToggle.bind( this );
@@ -35,7 +35,7 @@ export default class ProductFormVariationCard extends Component {
 
 	handleToggle() {
 		this.setState( ( prevState ) => ( {
-			isVariation: ! prevState.isVariation,
+			isVariableProduct: ! prevState.isVariableProduct,
 		} ) );
 	}
 
@@ -55,11 +55,11 @@ export default class ProductFormVariationCard extends Component {
 				expanded={ true }
 				className="products__variation-card"
 				header={ ( <FormToggle onChange={ this.handleToggle } checked={ this.state.isVariation }>
-				{variationToggleDescription}
+					{ variationToggleDescription }
 				</FormToggle>
 				) }
 			>
-				{ this.state.isVariation && (
+				{ this.state.isVariableProduct && (
 					<ProductVariationTypesForm />
 				) }
 			</FoldableCard>
