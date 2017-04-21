@@ -8,10 +8,10 @@ import i18n from 'i18n-calypso';
  * Internal dependencies
  */
 import Card from 'components/card';
+import CompactFormToggle from 'components/forms/form-toggle/compact';
 import FormLabel from 'components/forms/form-label';
 import FormTextArea from 'components/forms/form-textarea';
 import FormTextInput from 'components/forms/form-text-input';
-import CompactFormToggle from 'components/forms/form-toggle/compact';
 
 export default class ProductFormDetailsCard extends Component {
 
@@ -53,7 +53,7 @@ export default class ProductFormDetailsCard extends Component {
 		return (
 			<Card className="products__product-form-details">
 				<div>
-					<FormLabel>
+					<FormLabel className="products__product-form-featured">
 						{ __( 'Featured' ) }
 						<CompactFormToggle
 							onChange={ this.toggleFeatured }
@@ -62,14 +62,11 @@ export default class ProductFormDetailsCard extends Component {
 					</FormLabel>
 				</div>
 				<div>
-
-				</div>
-				<div>
-					<FormLabel>
+					<FormLabel className="products__product-form-name">
 						<span>{ __( 'Product name' ) }</span>
 						<FormTextInput value={ product.name || '' } onChange={ this.setName } />
 					</FormLabel>
-					<FormLabel>
+					<FormLabel className="products__product-form-description">
 						<span>{ __( 'Description' ) }</span>
 						<FormTextArea value={ product.description || '' } onChange={ this.setDescription } />
 					</FormLabel>
