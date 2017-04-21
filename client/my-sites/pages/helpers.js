@@ -41,11 +41,7 @@ module.exports = {
 			const children = pagesByParent[ pageID ] || [];
 
 			forEach( children, child => {
-				const indentedChild = assign( child, {
-					indentLevel: indentLevel,
-				} );
-
-				sortedPages.push( indentedChild );
+				sortedPages.push( assign( {}, child, { indentLevel } ) );
 				insertChildren( child.ID, indentLevel++ );
 			} );
 		};
