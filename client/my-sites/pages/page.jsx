@@ -27,7 +27,11 @@ var updatePostStatus = require( 'lib/mixins/update-post-status' ),
 
 import MenuSeparator from 'components/popover/menu-separator';
 import { getSelectedSiteId } from 'state/ui/selectors';
-import { hasStaticFrontPage, isSitePreviewable } from 'state/sites/selectors';
+import {
+	getSite,
+	hasStaticFrontPage,
+	isSitePreviewable,
+} from 'state/sites/selectors';
 import {
 	isFrontPage,
 	isPostsPage,
@@ -457,13 +461,15 @@ const Page = React.createClass( {
 
 export default connect(
 	( state, props ) => {
+		const site = getSite( state, props.page.site_ID );
 		return {
 			selectedSiteId: getSelectedSiteId( state ),
 			hasStaticFrontPage: hasStaticFrontPage( state, props.page.site_ID ),
 			isFrontPage: isFrontPage( state, props.page.site_ID, props.page.ID ),
 			isPostsPage: isPostsPage( state, props.page.site_ID, props.page.ID ),
-			isPreviewable: false !== isSitePreviewable( state, props.site.ID ),
+			isPreviewable: false !== isSitePreviewable( state, site.ID ),
 			previewURL: getPreviewURL( props.page ),
+			site,
 		};
 	},
 	( dispatch ) => bindActionCreators( {
