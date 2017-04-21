@@ -9,6 +9,7 @@ import { connect } from 'react-redux';
  */
 import VerificationCodeInput from './verification-code-input';
 import WaitingTwoFactorNotificationApproval from './waiting-notification-approval';
+import { getTwoFactorAuthType } from 'state/login/selectors';
 import { localize } from 'i18n-calypso';
 
 class Login2FA extends Component {
@@ -31,6 +32,6 @@ class Login2FA extends Component {
 	}
 }
 
-export default connect( () => ( {
-	twoFactorAuthType: 'code',
+export default connect( ( state ) => ( {
+	twoFactorAuthType: getTwoFactorAuthType( state ),
 } ) )( localize( Login2FA ) );

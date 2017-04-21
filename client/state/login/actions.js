@@ -13,6 +13,9 @@ import {
 	LOGIN_REQUEST,
 	LOGIN_REQUEST_FAILURE,
 	LOGIN_REQUEST_SUCCESS,
+	LOGIN_2FA_VERIFICATION_CODE_SEND_REQUEST,
+	LOGIN_2FA_VERIFICATION_CODE_SEND_REQUEST_FAILURE,
+	LOGIN_2FA_VERIFICATION_CODE_SEND_REQUEST_SUCCESS,
 } from 'state/action-types';
 
 const loginErrorMessages = {
@@ -23,6 +26,16 @@ const loginErrorMessages = {
 	unknown: translate( 'Invalid username or password.' ),
 	account_unactivated: translate( 'This account has not been activated. Please check your email for an activation link.' )
 };
+
+function getMessageFromHTTPError( error ) {
+	const errorKeys = get( error, 'response.body.data.errors' );
+
+	if ( errorKeys ) {
+		return errorKeys.map( errorKey => loginErrorMessages[ errorKey ] ).join( ' ' );
+	}
+
+	return get( error, 'response.body.data' ) || error.message;
+}
 
 /**
  * Attempt to login a user.
@@ -45,26 +58,68 @@ export const loginUser = ( usernameOrEmail, password ) => dispatch => {
 			password,
 			client_id: config( 'wpcom_signup_id' ),
 			client_secret: config( 'wpcom_signup_key' ),
-		} ).then( ( reponse ) => {
+		} ).then( ( response ) => {
 			dispatch( {
 				type: LOGIN_REQUEST_SUCCESS,
 				usernameOrEmail,
-				data: reponse.body,
+				data: response.body && response.body.data,
 			} );
 		} ).catch( ( error ) => {
-			let errorMessage;
-			const errorKeys = get( error, 'response.body.data.errors' );
-			if ( errorKeys ) {
-				errorMessage = errorKeys.map( errorKey => loginErrorMessages[ errorKey ] ).join( ' ' );
-			} else {
-				errorMessage = get( error, 'response.body.data' ) || error.message;
-			}
+			const errorMessage = getMessageFromHTTPError( error );
+
 			dispatch( {
 				type: LOGIN_REQUEST_FAILURE,
 				usernameOrEmail,
-				error: errorMessage
+				error: errorMessage,
 			} );
 
 			return Promise.reject( errorMessage );
 		} );
+};
+
+/**
+ * Attempt to login a user when a two factor verification code is sent.
+ *
+ * @param  {Number}    two_step_id    Id of the user trying to log in.
+ * @param  {String}    two_step_code  Verification code for the user.
+ * @param  {String}    two_step_nonce Nonce generated for verification code submission.
+ * @param  {Boolean}   remember       Flag for remembering the user for a while after logging in.
+ * @return {Function}                 Action thunk to trigger the login process.
+ */
+export const loginUserWithTwoFactorVerificationCode = ( two_step_id, two_step_code, two_step_nonce, remember ) => {
+	return ( dispatch ) => {
+		dispatch( {
+			type: LOGIN_2FA_VERIFICATION_CODE_SEND_REQUEST,
+			two_step_id,
+			two_step_code,
+			two_step_nonce,
+			remember
+		} );
+
+		return request.post( config( 'login_url_xhr' ) )
+			.set( 'Content-Type', 'application/x-www-form-urlencoded' )
+			.accept( 'application/json' )
+			.send( {
+				two_step_id,
+				two_step_code,
+				two_step_nonce,
+				remember,
+				client_id: config( 'wpcom_signup_id' ),
+				client_secret: config( 'wpcom_signup_key' ),
+			} ).then( ( response ) => {
+				dispatch( {
+					type: LOGIN_2FA_VERIFICATION_CODE_SEND_REQUEST_SUCCESS,
+					data: response.body,
+				} );
+			} ).catch( ( error ) => {
+				const errorMessage = getMessageFromHTTPError( error );
+
+				dispatch( {
+					type: LOGIN_2FA_VERIFICATION_CODE_SEND_REQUEST_FAILURE,
+					error: errorMessage,
+				} );
+
+				return Promise.reject( errorMessage );
+			} );
+	};
 };

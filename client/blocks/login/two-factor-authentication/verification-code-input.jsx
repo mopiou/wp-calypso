@@ -18,6 +18,13 @@ import FormLabel from 'components/forms/form-label';
 import FormInputValidation from 'components/forms/form-input-validation';
 import Card from 'components/card';
 import { localize } from 'i18n-calypso';
+import { loginUserWithTwoFactorVerificationCode } from 'state/login/actions';
+import {
+	getTwoFactorAuthId,
+	getTwoFactorAuthNonce,
+	getVerificationCodeSubmissionError,
+	isLoginSuccessful
+} from 'state/login/selectors';
 
 class VerificationCodeInput extends Component {
 	state = {
@@ -128,13 +135,13 @@ class VerificationCodeInput extends Component {
 }
 
 export default connect(
-	() => ( {
-		twoStepId: 11111,
-		twoStepNonce: '5d5e1fgs55160a11ab15',
-		error: '',
-		isLoginSuccessful: null
+	( state ) => ( {
+		twoStepId: getTwoFactorAuthId( state ),
+		twoStepNonce: getTwoFactorAuthNonce( state ),
+		error: getVerificationCodeSubmissionError( state ),
+		isLoginSuccessful: isLoginSuccessful( state )
 	} ),
 	{
-		loginUserWithTwoFactorVerificationCode: new Promise(),
+		loginUserWithTwoFactorVerificationCode,
 	}
 )( localize( VerificationCodeInput ) );
