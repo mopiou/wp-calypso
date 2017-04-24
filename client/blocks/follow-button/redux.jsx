@@ -9,8 +9,8 @@ import { connect } from 'react-redux';
  * Internal Dependencies
  */
 import FollowButton from './button';
-import { followUrl, followBlog, followFeed } from 'state/reader/follows/actions';
-import { isFollowingBlog, isFollowingFeed, isFollowingUrl } from 'state/selectors';
+import { follow, unfollow } from 'state/reader/follows/actions';
+import { isFollowing } from 'state/selectors';
 
 
 const FollowButtonContainer = React.createClass( {
@@ -92,7 +92,7 @@ export default connect(
 			following = isFollowingBlog( ownProps.blogId );
 		}
 
-		return { following,  };
+		return { following };
 	},
 	( dispatch, ownProps ) => {
 		onFollowToggle: function( following ) {
