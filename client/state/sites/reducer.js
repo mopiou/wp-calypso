@@ -22,6 +22,7 @@ import {
 	SITE_FRONT_PAGE_SET_SUCCESS,
 	SITE_DELETE_RECEIVE,
 	JETPACK_DISCONNECT_RECEIVE,
+	SITE_DOMAINS_PRIMARY_SET_COMPLETED,
 	SITE_RECEIVE,
 	SITE_REQUEST,
 	SITE_REQUEST_FAILURE,
@@ -202,6 +203,17 @@ export function items( state = {}, action ) {
 				memo[ siteId ] = nextSite;
 				return memo;
 			}, state );
+		}
+
+		case SITE_DOMAINS_PRIMARY_SET_COMPLETED: {
+			const { siteId, primaryDomainName } = action;
+			return {
+				...state,
+				[ siteId ]: {
+					...state[ siteId ],
+					URL: `http://${ primaryDomainName }`
+				}
+			};
 		}
 
 		case MEDIA_DELETE: {
