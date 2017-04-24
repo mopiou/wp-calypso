@@ -44,6 +44,21 @@ export function getCurrentUserLocale( state ) {
 }
 
 /**
+ * Returns the isRTL value for the current user.
+ *
+ * @param  {Object} state  Global state tree
+ * @return {?Bool}  Current user is RTL
+ */
+export function getCurrentUserIsRTL( state ) {
+	const user = getCurrentUser( state );
+	if ( ! user ) {
+		return null;
+	}
+
+	return user.isRTL || null;
+}
+
+/**
  * Returns the currency code for the current user.
  *
  * @param  {Object}  state  Global state tree

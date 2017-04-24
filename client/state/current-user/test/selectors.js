@@ -10,6 +10,7 @@ import {
 	getCurrentUserId,
 	getCurrentUser,
 	getCurrentUserLocale,
+	getCurrentUserIsRTL,
 	getCurrentUserDate,
 	isValidCapability,
 	getCurrentUserCurrencyCode,
@@ -95,6 +96,48 @@ describe( 'selectors', () => {
 			} );
 
 			expect( locale ).to.equal( 'fr' );
+		} );
+	} );
+
+	describe( '#getCurrentUserIsRTL', () => {
+		it( 'should return null if the current user is not set', () => {
+			const isRTL = getCurrentUserIsRTL( {
+				currentUser: {
+					id: null
+				}
+			} );
+
+			expect( isRTL ).to.be.null;
+		} );
+
+		it( 'should return null if the current user isRTL slug is not set', () => {
+			const isRTL = getCurrentUserIsRTL( {
+				users: {
+					items: {
+						73705554: { ID: 73705554, login: 'testonesite2014' }
+					}
+				},
+				currentUser: {
+					id: 73705554
+				}
+			} );
+
+			expect( isRTL ).to.be.null;
+		} );
+
+		it( 'should return the current user isRTL value', () => {
+			const isRTL = getCurrentUserIsRTL( {
+				users: {
+					items: {
+						73705554: { ID: 73705554, login: 'testonesite2014', isRTL: true }
+					}
+				},
+				currentUser: {
+					id: 73705554
+				}
+			} );
+
+			expect( isRTL ).to.be.true;
 		} );
 	} );
 
