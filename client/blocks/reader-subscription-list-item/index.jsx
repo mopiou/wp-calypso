@@ -15,7 +15,7 @@ import { getStreamUrl } from 'reader/route';
 import EmailSettings from './email-settings';
 import { getSiteName, getSiteUrl } from 'reader/get-helpers';
 
-const stripUrl = url => url.replace( 'https://', '' ).replace( 'http://', '' ).replace( '/', '' );
+const stripUrl = url => url.replace( 'https://', '' ).replace( 'http://', '' ).replace( /\/$/, '' );
 
 function ReaderSubscriptionListItem( {
 	url,
