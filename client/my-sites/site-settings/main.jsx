@@ -56,7 +56,6 @@ export class SiteSettingsComponent extends Component {
 	}
 
 	getSection() {
-		const { site } = this.props;
 		const { section, hostSlug } = this.props;
 
 		switch ( section ) {
@@ -68,7 +67,7 @@ export class SiteSettingsComponent extends Component {
 					/>
 				);
 			case 'security':
-				return <SiteSecurity site={ site } />;
+				return <SiteSecurity />;
 			case 'import':
 				return <ImportSettings />;
 			case 'export':
@@ -81,10 +80,6 @@ export class SiteSettingsComponent extends Component {
 	render() {
 		const { site } = this.props;
 		const { jetpackSettingsUiSupported, section } = this.props;
-
-		if ( ! site ) {
-			return null;
-		}
 
 		return (
 			<Main className="site-settings">
